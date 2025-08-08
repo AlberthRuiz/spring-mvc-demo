@@ -37,7 +37,9 @@ public class ProductController {
     @PostMapping
     public String createProduct(@ModelAttribute Product product, Model model ){
         try{
+            product.setEstado(true);
             productService.createProduct(product);
+
             model.addAttribute("successMessage", "New product was added.");
         } catch (Exception e) {
             model.addAttribute("errorMessage", "Something is wrong with request. Ex:"+ e.getMessage());
