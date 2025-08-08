@@ -1,10 +1,67 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8">
-    <title>Title</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Detalles del Producto</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
+<div class="container mt-4">
+  <h1>Detalles del Producto</h1>
 
+  <div class="row">
+    <div class="col-md-8">
+      <div class="card">
+        <div class="card-body">
+          <h3 th:text="${product.nombre}">Nombre del producto</h3>
+
+          <table class="table">
+            <tr>
+              <th>Precio:</th>
+              <td>S/. <span th:text="${product.precio}">0.00</span></td>
+            </tr>
+            <tr>
+              <th>Stock:</th>
+              <td th:text="${product.stock}">0</td>
+            </tr>
+            <tr>
+              <th>Categoría:</th>
+              <td th:text="${product.categoria}">-</td>
+            </tr>
+            <tr>
+              <th>Estado:</th>
+              <td>
+                <span th:if="${product.estado}" class="badge bg-success">Disponible</span>
+                <span th:if="${!product.estado}" class="badge bg-danger">No Disponible</span>
+              </td>
+            </tr>
+            <tr>
+              <th>Valor Total:</th>
+              <td>S/. <span th:text="${product.precio * product.stock}">0.00</span></td>
+            </tr>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-4">
+      <div class="card">
+        <div class="card-header">
+          <h5>Acciones</h5>
+        </div>
+        <div class="card-body">
+          <div class="d-grid gap-2">
+            <a th:href="@{/products/{id}/edit(id=${product.id})}" class="btn btn-warning">Editar</a>
+            <form th:action="@{/products/{id}/delete(id=${product.id})}" method="post">
+              <button type="submit" class="btn btn-danger w-100" onclick="return confirm('¿Eliminar?')">Eliminar</button>
+            </form>
+            <a href="/products" class="btn btn-secondary">Volver a Lista</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 </body>
 </html>

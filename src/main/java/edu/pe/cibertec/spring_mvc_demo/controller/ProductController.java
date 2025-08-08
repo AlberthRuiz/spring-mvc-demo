@@ -65,7 +65,7 @@ public class ProductController {
             productService.updateProduct(id, product);
             model.addAttribute("successMessage", "Produc was updated.");
         } catch (Exception e) {
-            model.addAttribute("errorMessage", "Something is wrong with request. Ex:"+ e.getMessage());
+            model.addAttribute("errorMessage", "Something was wrong with request. Ex:"+ e.getMessage());
             model.addAttribute("product", product);
             model.addAttribute("categories", catergories);
             model.addAttribute("isEdit", true);
@@ -75,13 +75,29 @@ public class ProductController {
 
     @GetMapping("/{id}")
     public String viewProduct(@PathVariable Long id , Model model){
-
-        return "";
+        Optional<Product> product = productService.getProductById(id);
+        if(product.isEmpty()){
+            model.addAttribute("errorMessage", "Product not found.");
+            return  "redirect:/products";
+        }
+        model.addAttribute("product", product);
+        return "product/detail";
     }
 
     @PostMapping("/{id}/delete")
-    public String deleteProduct(){
-        return "";
+    public String deleteProduct(@PathVariable Long id, Model model){
+        try{
+            boolean deleted = productService.deleteProduct(id);
+            if(deleted){
+                model.addAttribute("successMessage", "Product was deleted.");
+            }else{
+                model.addAttribute("errorMessage", "Error on delete operation.");
+            }
+        } catch (Exception e) {
+            model.addAttribute("errorMessage",
+                    "Something was wrong with your request. Ex: "+e.getMessage());
+        }
+        return "redirect:/products";
     }
 
 }
