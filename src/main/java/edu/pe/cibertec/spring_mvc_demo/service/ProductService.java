@@ -27,7 +27,7 @@ public class ProductService {
         }
         return  productRepository.save(product);
     }
-    public List<Product> getAllProduct(){
+    public List<Product> getAllProducts(){
         List<Product> products = new ArrayList<>();
         productRepository.findAll().forEach(products::add);
         return products;
@@ -67,5 +67,9 @@ public class ProductService {
             return  true;
         }
         return false;
+    }
+
+    public List<String> getAllCategories() {
+        return productRepository.findAllCategories();
     }
 }

@@ -7,7 +7,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -15,91 +14,109 @@ import java.util.Optional;
 @RequestMapping("/products")
 public class ProductController {
 
+
     @Autowired
     private ProductService productService;
-    List<String> catergories = new ArrayList<>();
+
     @GetMapping
-    public String listProducts(Model model){
-        List<Product> products = productService.getAllProduct();
+    public String listProducts(Model model) {
+        List<Product> products = productService.getAllProducts();
+        List<String> categories = productService.getAllCategories();
+
         model.addAttribute("products", products);
-        model.addAttribute("categories", catergories); // Falta completar
-        model.addAttribute("pageTitle", "Products List");
-        return  "products/list";
+        model.addAttribute("categories", categories);
+        model.addAttribute("pageTitle", "Gestión de Productos");
+
+        return "products/list"; // Retorna la vista list.html
     }
+
     @GetMapping("/new")
-    public String showCreateProduct(Model model){
+    public String showCreateForm(Model model) {
         model.addAttribute("product", new Product());
-        model.addAttribute("categories", catergories); // Falta completar
-        model.addAttribute("pageTitle", "Create new Product");
-        return "products/form";
+        model.addAttribute("categories", productService.getAllCategories());
+        model.addAttribute("pageTitle", "Crear Nuevo Producto");
+
+        return "products/form"; // Retorna la vista form.html
     }
 
     @PostMapping
-    public String createProduct(@ModelAttribute Product product, Model model ){
-        try{
+    public String createProduct(@ModelAttribute Product product, Model model) {
+        try {
             product.setEstado(true);
             productService.createProduct(product);
 
-            model.addAttribute("successMessage", "New product was added.");
+            model.addAttribute("successMessage", "Producto creado exitosamente");
+            return "redirect:/products"; // Redirecciona a la lista
         } catch (Exception e) {
-            model.addAttribute("errorMessage", "Something is wrong with request. Ex:"+ e.getMessage());
+            model.addAttribute("errorMessage", "Error al crear producto: " + e.getMessage());
             model.addAttribute("product", product);
-            model.addAttribute("categories", catergories);
+            model.addAttribute("categories", productService.getAllCategories());
+            return "products/form"; // Vuelve al formulario con error
         }
-        return  "products/form";
     }
 
     @GetMapping("/{id}/edit")
-    public  String showEditProduct(@PathVariable Long id, Model model){
+    public String showEditForm(@PathVariable Long id, Model model) {
         Optional<Product> product = productService.getProductById(id);
-        if(product.isEmpty()){
-            model.addAttribute("errorMessage", "Product not found.");
-            return  "redirect:/products";
+
+        if (product.isEmpty()) {
+            model.addAttribute("errorMessage", "Producto no encontrado");
+            return "redirect:/products";
         }
-        model.addAttribute("product", product);
-        model.addAttribute("categories", catergories);
+
+        model.addAttribute("product", product.get());
+        model.addAttribute("categories", productService.getAllCategories());
+        model.addAttribute("pageTitle", "Editar Producto");
         model.addAttribute("isEdit", true);
+
         return "products/form";
     }
+
     @PostMapping("/{id}")
-    public String updateProduct(@PathVariable Long id,@ModelAttribute Product product, Model model){
-        try{
+    public String updateProduct(@PathVariable Long id, @ModelAttribute Product product, Model model) {
+        try {
             productService.updateProduct(id, product);
-            model.addAttribute("successMessage", "Produc was updated.");
+            model.addAttribute("successMessage", "Producto actualizado exitosamente");
+            return "redirect:/products";
         } catch (Exception e) {
-            model.addAttribute("errorMessage", "Something was wrong with request. Ex:"+ e.getMessage());
+            model.addAttribute("errorMessage", "Error al actualizar producto: " + e.getMessage());
             model.addAttribute("product", product);
-            model.addAttribute("categories", catergories);
+            model.addAttribute("categories", productService.getAllCategories());
             model.addAttribute("isEdit", true);
+            return "products/form";
         }
-        return  "products/form";
     }
 
     @GetMapping("/{id}")
-    public String viewProduct(@PathVariable Long id , Model model){
+    public String viewProduct(@PathVariable Long id, Model model) {
         Optional<Product> product = productService.getProductById(id);
-        if(product.isEmpty()){
-            model.addAttribute("errorMessage", "Product not found.");
-            return  "redirect:/products";
+
+        if (product.isEmpty()) {
+            model.addAttribute("errorMessage", "Producto no encontrado");
+            return "redirect:/products";
         }
-        model.addAttribute("product", product);
-        return "product/detail";
+
+        model.addAttribute("product", product.get());
+        model.addAttribute("pageTitle", "Detalles del Producto");
+
+        return "products/detail";
     }
 
     @PostMapping("/{id}/delete")
-    public String deleteProduct(@PathVariable Long id, Model model){
-        try{
+    public String deleteProduct(@PathVariable Long id, Model model) {
+        try {
             boolean deleted = productService.deleteProduct(id);
-            if(deleted){
-                model.addAttribute("successMessage", "Product was deleted.");
-            }else{
-                model.addAttribute("errorMessage", "Error on delete operation.");
+            if (deleted) {
+                model.addAttribute("successMessage", "Producto eliminado exitosamente");
+            } else {
+                model.addAttribute("errorMessage", "No se pudo eliminar el producto");
             }
         } catch (Exception e) {
-            model.addAttribute("errorMessage",
-                    "Something was wrong with your request. Ex: "+e.getMessage());
+            model.addAttribute("errorMessage", "Error al eliminar producto: " + e.getMessage());
         }
+
         return "redirect:/products";
     }
+
 
 }
