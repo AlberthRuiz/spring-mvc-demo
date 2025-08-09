@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title th:text="'Detalles de ' + ${category.nombre} + ' - RetailPro'">Detalles de Categoría - RetailPro</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+  <style>
+    .page-header {
+      background-color: #f8f9fa;
+      border-bottom: 1px solid #dee2e6;
+      padding: 30px 0;
+      margin-bottom: 30px;
+    }
+    .detail-card {
+      background: white;
+      border: 1px solid #dee2e6;
+    }
+    .navbar-brand {
+      font-weight: 600;
+    }
+    .info-row {
+      border-bottom: 1px solid #f1f3f4;
+      padding: 12px 0;
+    }
+    .info-row:last-child {
+      border-bottom: none;
+    }
+    .status-badge {
+      font-size: 0.9rem;
+      padding: 8px 16px;
+    }
+    .action-card {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+    }
+  </style>
+</head>
+<body class="bg-light">
+  <!-- Navbar -->
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow">
+    <div class="container">
+      <a class="navbar-brand" href="/">
+        <i class="bi bi-shop"></i> RetailPro
+      </a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav ms-auto">
+          <li class="nav-item">
+            <a class="nav-link" href="/">Inicio</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/products">Productos</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link active" href="/categories">Categorías</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#">Ventas</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#">Inventario</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#">Reportes</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Header -->
+  <div class="page-header">
+    <div class="container">
+      <div class="row align-items-center">
+        <div class="col-md-8">
+          <h2 class="mb-1">
+            <i class="bi bi-tag"></i> Detalles de Categoría
+          </h2>
+          <p class="text-muted mb-0">Información completa de la categoría seleccionada</p>
+        </div>
+        <div class="col-md-4 text-md-end">
+          <div class="btn-group">
+            <a href="/categories" class="btn btn-secondary">
+              <i class="bi bi-arrow-left"></i> Volver
+            </a>
+            <a th:href="@{/categories/{id}/edit(id=${category.id})}" class="btn btn-warning">
+              <i class="bi bi-pencil"></i> Editar
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="container">
+    <!-- Alertas -->
+    <div th:if="${successMessage}" class="alert alert-success alert-dismissible fade show" role="alert">
+      <i class="bi bi-check-circle"></i> <span th:text="${successMessage}"></span>
+      <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+    
+    <div th:if="${errorMessage}" class="alert alert-danger alert-dismissible fade show" role="alert">
+      <i class="bi bi-exclamation-circle"></i> <span th:text="${errorMessage}"></span>
+      <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+
+    <div class="row">
+      <!-- Información principal de la categoría -->
+      <div class="col-lg-8">
+        <div class="detail-card card mb-4">
+          <div class="card-header d-flex justify-content-between align-items-center">
+            <h4 class="mb-0">
+              <i class="bi bi-info-circle"></i> Información General
+            </h4>
+            <span th:if="${category.estado}" class="badge bg-success status-badge">
+              <i class="bi bi-check-circle"></i> Activa
+            </span>
+            <span th:if="${!category.estado}" class="badge bg-danger status-badge">
+              <i class="bi bi-x-circle"></i> Inactiva
+            </span>
+          </div>
+          
+          <div class="card-body">
+            <!-- Nombre -->
+            <div class="info-row">
+              <div class="row">
+                <div class="col-sm-3">
+                  <strong><i class="bi bi-tag text-primary"></i> Nombre:</strong>
+                </div>
+                <div class="col-sm-9">
+                  <h5 class="text-primary mb-0" th:text="${category.nombre}">Nombre de la categoría</h5>
+                </div>
+              </div>
+            </div>
+
+            <!-- Descripción -->
+            <div class="info-row">
+              <div class="row">
+                <div class="col-sm-3">
+                  <strong><i class="bi bi-card-text text-secondary"></i> Descripción:</strong>
+                </div>
+                <div class="col-sm-9">
+                  <p class="mb-0" th:text="${category.descripcion ?: 'Sin descripción'}">Descripción de la categoría</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- ID de la categoría -->
+            <div class="info-row">
+              <div class="row">
+                <div class="col-sm-3">
+                  <strong><i class="bi bi-hash text-info"></i> Identificador:</strong>
+                </div>
+                <div class="col-sm-9">
+                  <code class="fs-6" th:text="${category.id}">ID</code>
+                </div>
+              </div>
+            </div>
+
+            <!-- Estado detallado -->
+            <div class="info-row">
+              <div class="row">
+                <div class="col-sm-3">
+                  <strong><i class="bi bi-gear text-warning"></i> Estado:</strong>
+                </div>
+                <div class="col-sm-9">
+                  <div th:if="${category.estado}" class="text-success">
+                    <i class="bi bi-check-circle"></i> 
+                    Categoría activa y disponible para nuevos productos
+                  </div>
+                  <div th:if="${!category.estado}" class="text-danger">
+                    <i class="bi bi-x-circle"></i> 
+                    Categoría inactiva - No aparece en formularios de productos
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Productos asociados -->
+        <div class="card">
+          <div class="card-header">
+            <h5 class="mb-0">
+              <i class="bi bi-box-seam"></i> Productos Asociados
+              <span class="badge bg-primary ms-2" th:text="${productCount ?: 0}">0</span>
+            </h5>
+          </div>
+          <div class="card-body">
+            <div th:if="${productCount == 0}" class="text-center py-4 text-muted">
+              <i class="bi bi-inbox" style="font-size: 3rem;"></i>
+              <p class="mt-2 mb-0">No hay productos asociados a esta categoría</p>
+              <small>Los productos que se asignen a esta categoría aparecerán aquí</small>
+            </div>
+            
+            <div th:if="${productCount > 0}" class="row">
+              <div class="col-md-6">
+                <div class="d-flex align-items-center">
+                  <i class="bi bi-boxes text-primary fs-1 me-3"></i>
+                  <div>
+                    <h4 class="mb-0 text-primary" th:text="${productCount}">0</h4>
+                    <small class="text-muted">productos registrados</small>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-6 text-md-end">
+                <a th:href="@{/products(category=${category.id})}" class="btn btn-outline-primary">
+                  <i class="bi bi-eye"></i> Ver Productos
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Panel de acciones -->
+      <div class="col-lg-4">
+        <!-- Acciones -->
+        <div class="card action-card mb-4">
+          <div class="card-header">
+            <h5 class="mb-0"><i class="bi bi-lightning"></i> Acciones Rápidas</h5>
+          </div>
+          <div class="card-body">
+            <div class="d-grid gap-2">
+              <!-- Editar -->
+              <a th:href="@{/categories/{id}/edit(id=${category.id})}" 
+                 class="btn btn-light">
+                <i class="bi bi-pencil"></i> Editar Categoría
+              </a>
+              
+              <!-- Activar/Desactivar -->
+              <form th:action="@{/categories/{id}/toggle(id=${category.id})}" 
+                    method="post">
+                <button type="submit" 
+                        th:class="${category.estado} ? 'btn btn-outline-light w-100' : 'btn btn-success w-100'">
+                  <i th:class="${category.estado} ? 'bi bi-pause' : 'bi bi-play'"></i>
+                  <span th:text="${category.estado} ? 'Desactivar' : 'Activar'">Toggle</span>
+                </button>
+              </form>
+              
+              <!-- Eliminar -->
+              <form th:action="@{/categories/{id}/delete(id=${category.id})}" 
+                    method="post" 
+                    onsubmit="return confirm('¿Estás seguro de eliminar esta categoría?\n\nEsta acción no se puede deshacer.')">
+                <button type="submit" class="btn btn-outline-light w-100">
+                  <i class="bi bi-trash"></i> Eliminar Categoría
+                </button>
+              </form>
+            </div>
+          </div>
+        </div>
+
+        <!-- Información estadística -->
+        <div class="card">
+          <div class="card-header">
+            <h5 class="mb-0"><i class="bi bi-graph-up"></i> Estadísticas</h5>
+          </div>
+          <div class="card-body">
+            <div class="row text-center">
+              <div class="col-12 mb-3">
+                <div class="border-bottom pb-2">
+                  <h4 class="text-primary mb-0" th:text="${productCount ?: 0}">0</h4>
+                  <small class="text-muted">Productos Asociados</small>
+                </div>
+              </div>
+              <div class="col-6">
+                <div class="border-end">
+                  <h6 class="text-success mb-0" th:text="${category.estado} ? 'Sí' : 'No'">Estado</h6>
+                  <small class="text-muted">Activa</small>
+                </div>
+              </div>
+              <div class="col-6">
+                <h6 class="text-info mb-0">#<span th:text="${category.id}">1</span></h6>
+                <small class="text-muted">ID</small>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Navegación rápida -->
+        <div class="card mt-3">
+          <div class="card-header">
+            <h6 class="mb-0"><i class="bi bi-compass"></i> Navegación</h6>
+          </div>
+          <div class="card-body">
+            <div class="d-grid gap-1">
+              <a href="/categories" class="btn btn-outline-secondary btn-sm">
+                <i class="bi bi-list"></i> Lista de Categorías
+              </a>
+              <a href="/categories/new" class="btn btn-outline-primary btn-sm">
+                <i class="bi bi-plus-circle"></i> Nueva Categoría
+              </a>
+              <a href="/products" class="btn btn-outline-info btn-sm">
+                <i class="bi bi-box-seam"></i> Ver Productos
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="bg-dark text-light text-center py-4 mt-5">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-6 text-md-start">
+          <h6><i class="bi bi-shop"></i> RetailPro</h6>
+          <p class="mb-0 small">Sistema de Gestión de Inventario</p>
+        </div>
+        <div class="col-md-6 text-md-end">
+          <p class="mb-0 small">&copy; 2024 RetailPro. Todos los derechos reservados.</p>
+          <p class="mb-0 small">Desarrollado con Spring Boot + Bootstrap</p>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    // Auto-ocultar alertas después de 4 segundos
+    document.addEventListener('DOMContentLoaded', function() {
+      setTimeout(function() {
+        const alerts = document.querySelectorAll('.alert-dismissible');
+        alerts.forEach(function(alert) {
+          const bsAlert = new bootstrap.Alert(alert);
+          bsAlert.close();
+        });
+      }, 4000);
+    });
+  </script>
+</body>
+</html>
