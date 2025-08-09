@@ -7,7 +7,7 @@ import java.util.List;
 
 @Entity
 @Table(name = "categorias")
-public class Catergory {
+public class Category {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -21,10 +21,10 @@ public class Catergory {
     @OneToMany(mappedBy = "category", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Product> products = new ArrayList<>();
 
-    public Catergory() {
+    public Category() {
     }
 
-    public Catergory(String descripcion, Long id, String nombre, boolean estado) {
+    public Category(String descripcion, Long id, String nombre, boolean estado) {
         this.descripcion = descripcion;
         this.id = id;
         this.nombre = nombre;
