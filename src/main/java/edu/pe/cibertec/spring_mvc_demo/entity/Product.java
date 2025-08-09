@@ -20,8 +20,9 @@ public class Product {
     @Column(name = "stock", nullable = false)
     private Integer stock;
 
-    @Column(name="categoria", nullable = false, length = 100)
-    private String categoria;
+    @ManyToOne
+    @JoinColumn(name = "category_id", nullable = false)
+    private Category categoria;
 
     @Column(name = "estado", nullable = false)
     private Boolean estado;
@@ -33,7 +34,7 @@ public class Product {
     public Product() {
     }
 
-    public Product(String categoria, Boolean estado, Long id, String nombre, BigDecimal precio, Integer stock) {
+    public Product(Category categoria, Boolean estado, Long id, String nombre, BigDecimal precio, Integer stock) {
         this.categoria = categoria;
         this.estado = estado;
         this.id = id;
@@ -42,11 +43,11 @@ public class Product {
         this.stock = stock;
     }
 
-    public String getCategoria() {
+    public Category getCategoria() {
         return categoria;
     }
 
-    public void setCategoria(String categoria) {
+    public void setCategoria(Category categoria) {
         this.categoria = categoria;
     }
 
