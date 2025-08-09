@@ -38,7 +38,7 @@ public class ProductService {
     }
     public Product updateProduct(Long id, Product product){
         Optional<Product> objProduct = productRepository.findById(id);
-        if (objProduct== null){
+        if (objProduct.isEmpty()){
             throw  new IllegalArgumentException("Producto no encontrado");
         }
         Product update_product = objProduct.get();
