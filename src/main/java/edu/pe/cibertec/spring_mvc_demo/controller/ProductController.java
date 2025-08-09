@@ -35,6 +35,7 @@ public class ProductController {
         model.addAttribute("product", new Product());
         model.addAttribute("categories", productService.getAllCategories());
         model.addAttribute("pageTitle", "Crear Nuevo Producto");
+        model.addAttribute("isEdit", false);
 
         return "products/form"; // Retorna la vista form.html
     }
@@ -51,6 +52,7 @@ public class ProductController {
             model.addAttribute("errorMessage", "Error al crear producto: " + e.getMessage());
             model.addAttribute("product", product);
             model.addAttribute("categories", productService.getAllCategories());
+            model.addAttribute("isEdit", false);
             return "products/form"; // Vuelve al formulario con error
         }
     }

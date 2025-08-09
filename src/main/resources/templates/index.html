@@ -1,10 +1,240 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RetailPro - Sistema de Gestión</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <style>
+        .header-section {
+            background-color: #f8f9fa;
+            border-bottom: 1px solid #dee2e6;
+            padding: 40px 0;
+        }
+        .feature-card {
+            border: 1px solid #dee2e6;
+            transition: border-color 0.2s ease;
+        }
+        .feature-card:hover {
+            border-color: #0d6efd;
+        }
+        .feature-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            color: #6c757d;
+        }
+        .stats-card {
+            background-color: white;
+            border: 1px solid #dee2e6;
+        }
+        .navbar-brand {
+            font-weight: 600;
+        }
+    </style>
 </head>
 <body>
-    <h1>Hola desde spring MVC</h1>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow">
+        <div class="container">
+            <a class="navbar-brand" href="/">
+                <i class="bi bi-shop"></i> RetailPro
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="/">Inicio</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/products">Productos</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Ventas</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Inventario</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Reportes</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Header Section -->
+    <section class="header-section">
+        <div class="container">
+            <div class="row">
+                <div class="col-12 text-center">
+                    <h1 class="display-5 mb-3">Sistema de Gestión Retail</h1>
+                    <p class="lead text-muted mb-4">Administra tu negocio de manera eficiente</p>
+                    <a href="/products" class="btn btn-primary me-2">
+                        <i class="bi bi-box-seam"></i> Gestionar Productos
+                    </a>
+                    <a href="#" class="btn btn-outline-secondary">
+                        <i class="bi bi-graph-up"></i> Ver Reportes
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Main Content -->
+    <div class="container my-5">
+        <!-- Stats Cards -->
+        <div class="row mb-5">
+            <div class="col-md-3 mb-3">
+                <div class="card stats-card text-center p-3">
+                    <i class="bi bi-box-seam feature-icon text-primary"></i>
+                    <h4>150</h4>
+                    <p class="text-muted mb-0">Productos Activos</p>
+                </div>
+            </div>
+            <div class="col-md-3 mb-3">
+                <div class="card stats-card text-center p-3">
+                    <i class="bi bi-cart-check feature-icon text-success"></i>
+                    <h4>45</h4>
+                    <p class="text-muted mb-0">Ventas Hoy</p>
+                </div>
+            </div>
+            <div class="col-md-3 mb-3">
+                <div class="card stats-card text-center p-3">
+                    <i class="bi bi-people feature-icon text-info"></i>
+                    <h4>230</h4>
+                    <p class="text-muted mb-0">Clientes</p>
+                </div>
+            </div>
+            <div class="col-md-3 mb-3">
+                <div class="card stats-card text-center p-3">
+                    <i class="bi bi-currency-dollar feature-icon text-warning"></i>
+                    <h4>S/. 12,450</h4>
+                    <p class="text-muted mb-0">Ventas del Mes</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Management Modules -->
+        <h3 class="mb-4">Módulos de Gestión</h3>
+        <div class="row">
+            <!-- Productos -->
+            <div class="col-lg-4 col-md-6 mb-4">
+                <div class="card feature-card h-100">
+                    <div class="card-body text-center">
+                        <i class="bi bi-box-seam feature-icon"></i>
+                        <h5 class="card-title">Gestión de Productos</h5>
+                        <p class="card-text text-muted">Administra tu catálogo de productos, precios y stock</p>
+                        <a href="/products" class="btn btn-primary">Acceder</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Ventas -->
+            <div class="col-lg-4 col-md-6 mb-4">
+                <div class="card feature-card h-100">
+                    <div class="card-body text-center">
+                        <i class="bi bi-cart-check feature-icon"></i>
+                        <h5 class="card-title">Punto de Venta</h5>
+                        <p class="card-text text-muted">Procesa ventas y genera facturas</p>
+                        <a href="#" class="btn btn-success">Acceder</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Inventario -->
+            <div class="col-lg-4 col-md-6 mb-4">
+                <div class="card feature-card h-100">
+                    <div class="card-body text-center">
+                        <i class="bi bi-archive feature-icon"></i>
+                        <h5 class="card-title">Control de Inventario</h5>
+                        <p class="card-text text-muted">Monitorea stock y movimientos</p>
+                        <a href="#" class="btn btn-warning">Acceder</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Clientes -->
+            <div class="col-lg-4 col-md-6 mb-4">
+                <div class="card feature-card h-100">
+                    <div class="card-body text-center">
+                        <i class="bi bi-people feature-icon"></i>
+                        <h5 class="card-title">Gestión de Clientes</h5>
+                        <p class="card-text text-muted">Administra información de clientes</p>
+                        <a href="#" class="btn btn-info">Acceder</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Proveedores -->
+            <div class="col-lg-4 col-md-6 mb-4">
+                <div class="card feature-card h-100">
+                    <div class="card-body text-center">
+                        <i class="bi bi-truck feature-icon"></i>
+                        <h5 class="card-title">Proveedores</h5>
+                        <p class="card-text text-muted">Gestiona proveedores y órdenes de compra</p>
+                        <a href="#" class="btn btn-secondary">Acceder</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Reportes -->
+            <div class="col-lg-4 col-md-6 mb-4">
+                <div class="card feature-card h-100">
+                    <div class="card-body text-center">
+                        <i class="bi bi-graph-up feature-icon"></i>
+                        <h5 class="card-title">Reportes</h5>
+                        <p class="card-text text-muted">Analiza ventas y genera reportes</p>
+                        <a href="#" class="btn btn-outline-primary">Acceder</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="row mt-5">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">Acciones Rápidas</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="d-flex flex-wrap gap-2">
+                            <a href="/products/new" class="btn btn-primary">
+                                <i class="bi bi-plus-circle"></i> Nuevo Producto
+                            </a>
+                            <a href="#" class="btn btn-success">
+                                <i class="bi bi-cart-plus"></i> Nueva Venta
+                            </a>
+                            <a href="#" class="btn btn-outline-secondary">
+                                <i class="bi bi-person-plus"></i> Nuevo Cliente
+                            </a>
+                            <a href="#" class="btn btn-outline-secondary">
+                                <i class="bi bi-file-earmark-text"></i> Ver Reportes
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-light border-top py-3 mt-5">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6">
+                    <p class="mb-0 text-muted"><strong>RetailPro</strong> - Sistema de gestión</p>
+                </div>
+                <div class="col-md-6 text-md-end">
+                    <p class="mb-0 text-muted">&copy; 2024 Todos los derechos reservados.</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

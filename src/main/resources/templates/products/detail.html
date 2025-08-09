@@ -3,65 +3,262 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Detalles del Producto</title>
+  <title th:text="'Detalles de ' + ${product.nombre} + ' - RetailPro'">Detalles del Producto - RetailPro</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+  <style>
+    .page-header {
+      background-color: #f8f9fa;
+      border-bottom: 1px solid #dee2e6;
+      padding: 30px 0;
+      margin-bottom: 30px;
+    }
+    .product-image {
+      height: 200px;
+      background-color: #f8f9fa;
+      border: 1px solid #dee2e6;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 3rem;
+      color: #6c757d;
+      margin-bottom: 20px;
+    }
+    .detail-card {
+      border: 1px solid #dee2e6;
+    }
+    .navbar-brand {
+      font-weight: 600;
+    }
+    .stat-item {
+      background: white;
+      border: 1px solid #dee2e6;
+      padding: 15px;
+      text-align: center;
+    }
+  </style>
 </head>
-<body>
-<div class="container mt-4">
-  <h1>Detalles del Producto</h1>
+<body class="bg-light">
+  <!-- Navbar -->
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow">
+    <div class="container">
+      <a class="navbar-brand" href="/">
+        <i class="bi bi-shop"></i> RetailPro
+      </a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav ms-auto">
+          <li class="nav-item">
+            <a class="nav-link" href="/">Inicio</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link active" href="/products">Productos</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#">Ventas</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#">Inventario</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#">Reportes</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
 
-  <div class="row">
-    <div class="col-md-8">
-      <div class="card">
-        <div class="card-body">
-          <h3 th:text="${product.nombre}">Nombre del producto</h3>
+  <!-- Header -->
+  <div class="page-header">
+    <div class="container">
+      <nav aria-label="breadcrumb" class="mb-3">
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item"><a href="/">Inicio</a></li>
+          <li class="breadcrumb-item"><a href="/products">Productos</a></li>
+          <li class="breadcrumb-item active" th:text="${product.nombre}">Producto</li>
+        </ol>
+      </nav>
 
-          <table class="table">
-            <tr>
-              <th>Precio:</th>
-              <td>S/. <span th:text="${product.precio}">0.00</span></td>
-            </tr>
-            <tr>
-              <th>Stock:</th>
-              <td th:text="${product.stock}">0</td>
-            </tr>
-            <tr>
-              <th>Categoría:</th>
-              <td th:text="${product.categoria}">-</td>
-            </tr>
-            <tr>
-              <th>Estado:</th>
-              <td>
-                <span th:if="${product.estado}" class="badge bg-success">Disponible</span>
-                <span th:if="${!product.estado}" class="badge bg-danger">No Disponible</span>
-              </td>
-            </tr>
-            <tr>
-              <th>Valor Total:</th>
-              <td>S/. <span th:text="${product.precio * product.stock}">0.00</span></td>
-            </tr>
-          </table>
+      <div class="row align-items-center">
+        <div class="col-md-8">
+          <h2 class="mb-1">
+            <span th:text="${product.nombre}">Nombre del producto</span>
+          </h2>
+          <p class="text-muted mb-0" th:text="${product.categoria}">Categoría</p>
+        </div>
+        <div class="col-md-4 text-md-end">
+          <span th:if="${product.estado}" class="badge bg-success">
+            Disponible
+          </span>
+          <span th:if="${!product.estado}" class="badge bg-secondary">
+            No Disponible
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="container">
+    <!-- Quick Stats -->
+    <div class="row mb-4">
+      <div class="col-md-3 mb-3">
+        <div class="stat-item">
+          <h5 class="text-primary" th:text="'S/. ' + ${product.precio}">S/. 0.00</h5>
+          <small class="text-muted">Precio Unitario</small>
+        </div>
+      </div>
+      <div class="col-md-3 mb-3">
+        <div class="stat-item">
+          <h5 th:text="${product.stock}">0</h5>
+          <small class="text-muted">Stock</small>
+        </div>
+      </div>
+      <div class="col-md-3 mb-3">
+        <div class="stat-item">
+          <h5 th:text="'S/. ' + ${product.precio * product.stock}">S/. 0.00</h5>
+          <small class="text-muted">Valor Total</small>
+        </div>
+      </div>
+      <div class="col-md-3 mb-3">
+        <div class="stat-item">
+          <h5>15</h5>
+          <small class="text-muted">Ventas</small>
         </div>
       </div>
     </div>
 
-    <div class="col-md-4">
-      <div class="card">
-        <div class="card-header">
-          <h5>Acciones</h5>
+    <div class="row">
+      <!-- Product Details -->
+      <div class="col-lg-8 mb-4">
+        <div class="detail-card card">
+          <div class="card-header">
+            <h5 class="mb-0">Información del Producto</h5>
+          </div>
+          <div class="card-body">
+            <div class="row">
+              <div class="col-md-4">
+                <div class="product-image">
+                  <i class="bi bi-box-seam"></i>
+                </div>
+              </div>
+              <div class="col-md-8">
+                <table class="table table-borderless">
+                  <tr>
+                    <th>Nombre:</th>
+                    <td th:text="${product.nombre}">-</td>
+                  </tr>
+                  <tr>
+                    <th>Categoría:</th>
+                    <td th:text="${product.categoria}">-</td>
+                  </tr>
+                  <tr>
+                    <th>Precio:</th>
+                    <td>
+                      <strong class="text-primary" th:text="'S/. ' + ${product.precio}">S/. 0.00</strong>
+                    </td>
+                  </tr>
+                  <tr>
+                    <th>Stock:</th>
+                    <td th:text="${product.stock} + ' unidades'">0 unidades</td>
+                  </tr>
+                  <tr>
+                    <th>Estado:</th>
+                    <td>
+                      <span th:if="${product.estado}" class="badge bg-success">Disponible</span>
+                      <span th:if="${!product.estado}" class="badge bg-secondary">No Disponible</span>
+                    </td>
+                  </tr>
+                  <tr>
+                    <th>Valor Total:</th>
+                    <td>
+                      <strong th:text="'S/. ' + ${product.precio * product.stock}">S/. 0.00</strong>
+                    </td>
+                  </tr>
+                </table>
+              </div>
+            </div>
+          </div>
         </div>
-        <div class="card-body">
-          <div class="d-grid gap-2">
-            <a th:href="@{/products/{id}/edit(id=${product.id})}" class="btn btn-warning">Editar</a>
-            <form th:action="@{/products/{id}/delete(id=${product.id})}" method="post">
-              <button type="submit" class="btn btn-danger w-100" onclick="return confirm('¿Eliminar?')">Eliminar</button>
-            </form>
-            <a href="/products" class="btn btn-secondary">Volver a Lista</a>
+      </div>
+
+      <!-- Actions Sidebar -->
+      <div class="col-lg-4">
+        <div class="card">
+          <div class="card-header">
+            <h5 class="mb-0">Acciones</h5>
+          </div>
+          <div class="card-body">
+            <div class="d-grid gap-2">
+              <a th:href="@{/products/{id}/edit(id=${product.id})}" class="btn btn-warning">
+                <i class="bi bi-pencil"></i> Editar
+              </a>
+              <button type="button" class="btn btn-danger" 
+                      th:onclick="'deleteProduct(' + ${product.id} + ')'">
+                <i class="bi bi-trash"></i> Eliminar
+              </button>
+              <a href="/products" class="btn btn-secondary">
+                <i class="bi bi-arrow-left"></i> Volver
+              </a>
+              <a href="/products/new" class="btn btn-outline-primary">
+                <i class="bi bi-plus-circle"></i> Nuevo Producto
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Stock Alert -->
+        <div th:if="${product.stock < 10}" class="card mt-3 border-warning">
+          <div class="card-body text-center">
+            <h6 class="text-warning">Stock Bajo</h6>
+            <p class="text-muted small">Considera reabastecer este producto</p>
           </div>
         </div>
       </div>
     </div>
   </div>
-</div>
+
+  <!-- Delete Confirmation Modal -->
+  <div class="modal fade" id="deleteModal" tabindex="-1">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Confirmar Eliminación</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <p>¿Estás seguro de que deseas eliminar este producto?</p>
+          <p class="text-muted small">Esta acción no se puede deshacer.</p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+          <form id="deleteForm" method="post" class="d-inline">
+            <button type="submit" class="btn btn-danger">Eliminar</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    function deleteProduct(productId) {
+      const deleteForm = document.getElementById('deleteForm');
+      deleteForm.action = '/products/' + productId + '/delete';
+      
+      const deleteModal = new bootstrap.Modal(document.getElementById('deleteModal'));
+      deleteModal.show();
+    }
+
+    // Auto-hide alerts after 5 seconds
+    setTimeout(function() {
+      const alerts = document.querySelectorAll('.alert');
+      alerts.forEach(function(alert) {
+        const bsAlert = new bootstrap.Alert(alert);
+        bsAlert.close();
+      });
+    }, 5000);
+  </script>
 </body>
 </html>
