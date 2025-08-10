@@ -22,7 +22,7 @@ public class Product {
 
     @ManyToOne
     @JoinColumn(name = "category_id", nullable = false)
-    private Category categoria;
+    private Category category;
 
     @Column(name = "estado", nullable = false)
     private Boolean estado;
@@ -35,7 +35,7 @@ public class Product {
     }
 
     public Product(Category categoria, Boolean estado, Long id, String nombre, BigDecimal precio, Integer stock) {
-        this.categoria = categoria;
+        this.category = categoria;
         this.estado = estado;
         this.id = id;
         this.nombre = nombre;
@@ -44,11 +44,11 @@ public class Product {
     }
 
     public Category getCategoria() {
-        return categoria;
+        return category;
     }
 
     public void setCategoria(Category categoria) {
-        this.categoria = categoria;
+        this.category = categoria;
     }
 
     public Boolean getEstado() {

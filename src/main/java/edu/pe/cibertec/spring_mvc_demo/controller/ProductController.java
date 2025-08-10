@@ -1,6 +1,8 @@
 package edu.pe.cibertec.spring_mvc_demo.controller;
 
+import edu.pe.cibertec.spring_mvc_demo.entity.Category;
 import edu.pe.cibertec.spring_mvc_demo.entity.Product;
+import edu.pe.cibertec.spring_mvc_demo.service.CategoryService;
 import edu.pe.cibertec.spring_mvc_demo.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -17,11 +19,12 @@ public class ProductController {
 
     @Autowired
     private ProductService productService;
-
+    @Autowired
+    private CategoryService categoryService;
     @GetMapping
     public String listProducts(Model model) {
         List<Product> products = productService.getAllProducts();
-        List<String> categories = productService.getAllCategories();
+        List<Category> categories = categoryService.getAllCategories();
 
         model.addAttribute("products", products);
         model.addAttribute("categories", categories);
@@ -33,7 +36,7 @@ public class ProductController {
     @GetMapping("/new")
     public String showCreateForm(Model model) {
         model.addAttribute("product", new Product());
-        model.addAttribute("categories", productService.getAllCategories());
+        model.addAttribute("categories", categoryService.getAllCategories());
         model.addAttribute("pageTitle", "Crear Nuevo Producto");
         model.addAttribute("isEdit", false);
 
@@ -51,7 +54,7 @@ public class ProductController {
         } catch (Exception e) {
             model.addAttribute("errorMessage", "Error al crear producto: " + e.getMessage());
             model.addAttribute("product", product);
-            model.addAttribute("categories", productService.getAllCategories());
+            model.addAttribute("categories", categoryService.getAllCategories());
             model.addAttribute("isEdit", false);
             return "products/form"; // Vuelve al formulario con error
         }
@@ -67,7 +70,7 @@ public class ProductController {
         }
 
         model.addAttribute("product", product.get());
-        model.addAttribute("categories", productService.getAllCategories());
+        model.addAttribute("categories", categoryService.getAllCategories());
         model.addAttribute("pageTitle", "Editar Producto");
         model.addAttribute("isEdit", true);
 
@@ -83,7 +86,7 @@ public class ProductController {
         } catch (Exception e) {
             model.addAttribute("errorMessage", "Error al actualizar producto: " + e.getMessage());
             model.addAttribute("product", product);
-            model.addAttribute("categories", productService.getAllCategories());
+            model.addAttribute("categories", categoryService.getAllCategories());
             model.addAttribute("isEdit", true);
             return "products/form";
         }

@@ -25,6 +25,7 @@ public class Category {
     }
 
     public Category(String descripcion, Long id, String nombre, boolean estado) {
+
         this.descripcion = descripcion;
         this.id = id;
         this.nombre = nombre;

@@ -9,7 +9,5 @@ import java.util.List;
 
 @Repository
 public interface ProductRepository extends CrudRepository<Product, Long> {
-    @Query("SELECT DISTINCT p.categoria FROM Product p ORDER BY p.categoria")
-    List<String> findAllCategories();
 
 }

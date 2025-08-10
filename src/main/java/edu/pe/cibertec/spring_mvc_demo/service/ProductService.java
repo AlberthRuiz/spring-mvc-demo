@@ -51,7 +51,7 @@ public class ProductService {
         if(product.getStock() != null || product.getStock() >=0){
             update_product.setStock(product.getStock());
         }
-        if(product.getCategoria() != null || !product.getCategoria().trim().isEmpty()){
+        if(product.getCategoria() != null || !product.getCategoria().getNombre().trim().isEmpty()){
             update_product.setCategoria(product.getCategoria());
         }
         update_product.setEstado(update_product.isAvailable());
@@ -69,7 +69,5 @@ public class ProductService {
         return false;
     }
 
-    public List<String> getAllCategories() {
-        return productRepository.findAllCategories();
-    }
+
 }
