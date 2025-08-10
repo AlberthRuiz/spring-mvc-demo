@@ -222,7 +222,8 @@
             
             <div class="row text-center small text-muted mb-3">
               <div class="col-6">
-                <strong th:text="${category.productCount ?: 0}">0</strong><br>
+                <!-- Cambiado para evitar error 500 si productCount es nulo o no existe -->
+                <strong th:text="${category.productCount != null ? category.productCount : (category.productos != null ? #lists.size(category.productos) : 0)}">0</strong><br>
                 <small>Productos</small>
               </div>
               <div class="col-6">
