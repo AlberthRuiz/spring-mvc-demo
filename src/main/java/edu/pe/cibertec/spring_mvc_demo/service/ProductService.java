@@ -12,62 +12,97 @@ import java.util.Optional;
 
 @Service
 public class ProductService {
+
     @Autowired
     private ProductRepository productRepository;
 
-    public Product createProduct(Product product){
-        if(product.getNombre() == null || product.getNombre().trim().isEmpty()){
-            throw  new IllegalArgumentException("El nombre del producto es obligatorio");
+    @Autowired
+    private CategoryService categoryService;
+
+    public Product createProduct(Product product) {
+        if (product.getNombre() == null || product.getNombre().trim().isEmpty()) {
+            throw new IllegalArgumentException("El nombre del producto es obligatorio");
         }
-        if(product.getPrecio() == null || product.getPrecio().compareTo(BigDecimal.ZERO) <=0){
-            throw  new IllegalArgumentException("El precio debe ser mayor a 0");
+
+        if (product.getPrecio() == null || product.getPrecio().compareTo(BigDecimal.ZERO) <= 0) {
+            throw new IllegalArgumentException("El precio debe ser mayor a 0");
         }
-        if(product.getStock() == null || product.getStock() <=0){
-            throw  new IllegalArgumentException("El stock debe ser mayor a 0");
+
+        if (product.getStock() == null || product.getStock() < 0) {
+            throw new IllegalArgumentException("El stock no puede ser negativo");
         }
-        return  productRepository.save(product);
+
+        if (product.getCategory() == null || product.getCategory().getId() == null) {
+            throw new IllegalArgumentException("La categoría es obligatoria");
+        }
+
+        if (!categoryService.existsById(product.getCategory().getId())) {
+            throw new IllegalArgumentException("La categoría especificada no existe");
+        }
+
+        product.setEstado(product.getStock() > 0);
+
+        return productRepository.save(product);
     }
-    public List<Product> getAllProducts(){
+
+    public List<Product> getAllProducts() {
         List<Product> products = new ArrayList<>();
         productRepository.findAll().forEach(products::add);
         return products;
     }
 
-    public Optional<Product> getProductById(Long id){
-        return  productRepository.findById(id);
-    }
-    public Product updateProduct(Long id, Product product){
-        Optional<Product> objProduct = productRepository.findById(id);
-        if (objProduct.isEmpty()){
-            throw  new IllegalArgumentException("Producto no encontrado");
+    public Optional<Product> getProductById(Long id) {
+        if (id == null || id <= 0) {
+            throw new IllegalArgumentException("ID inválido");
         }
-        Product update_product = objProduct.get();
-        if(product.getNombre() != null || !product.getNombre().trim().isEmpty()){
-            update_product.setNombre(product.getNombre());
-        }
-        if(product.getPrecio() != null || product.getPrecio().compareTo(BigDecimal.ZERO) >=0){
-            update_product.setPrecio(product.getPrecio());
-        }
-        if(product.getStock() != null || product.getStock() >=0){
-            update_product.setStock(product.getStock());
-        }
-        if(product.getCategoria() != null || !product.getCategoria().getNombre().trim().isEmpty()){
-            update_product.setCategoria(product.getCategoria());
-        }
-        update_product.setEstado(update_product.isAvailable());
-        return productRepository.save(update_product);
+        return productRepository.findById(id);
     }
 
-    public boolean deleteProduct(Long id){
-        if(id == null || id<=0){
-            throw  new IllegalArgumentException("ID no valido");
+    public Product updateProduct(Long id, Product productDetails) {
+        Optional<Product> existingProduct = productRepository.findById(id);
+
+        if (existingProduct.isEmpty()) {
+            throw new RuntimeException("Producto no encontrado con ID: " + id);
         }
-        if(productRepository.existsById(id)){
+
+        Product product = existingProduct.get();
+
+        if (productDetails.getNombre() != null && !productDetails.getNombre().trim().isEmpty()) {
+            product.setNombre(productDetails.getNombre());
+        }
+
+        if (productDetails.getPrecio() != null && productDetails.getPrecio().compareTo(BigDecimal.ZERO) > 0) {
+            product.setPrecio(productDetails.getPrecio());
+        }
+
+        if (productDetails.getStock() != null && productDetails.getStock() >= 0) {
+            product.setStock(productDetails.getStock());
+            product.setEstado(productDetails.getStock() > 0);
+        }
+
+        if (productDetails.getCategory() != null && productDetails.getCategory().getId() != null) {
+            if (!categoryService.existsById(productDetails.getCategory().getId())) {
+                throw new IllegalArgumentException("La categoría especificada no existe");
+            }
+            product.setCategory(productDetails.getCategory());
+        }
+
+        return productRepository.save(product);
+    }
+
+    public boolean deleteProduct(Long id) {
+        if (id == null || id <= 0) {
+            throw new IllegalArgumentException("ID inválido");
+        }
+
+        if (productRepository.existsById(id)) {
             productRepository.deleteById(id);
-            return  true;
+            return true;
         }
         return false;
     }
 
-
+    public boolean existsById(Long id) {
+        return id != null && id > 0 && productRepository.existsById(id);
+    }
 }

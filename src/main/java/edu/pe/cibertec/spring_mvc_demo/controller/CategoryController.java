@@ -3,89 +3,98 @@ package edu.pe.cibertec.spring_mvc_demo.controller;
 import edu.pe.cibertec.spring_mvc_demo.entity.Category;
 import edu.pe.cibertec.spring_mvc_demo.service.CategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.convert.JMoleculesConverters;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import javax.swing.text.html.Option;
 import java.util.List;
 import java.util.Optional;
 
 @Controller
 @RequestMapping("/categories")
 public class CategoryController {
+
     @Autowired
     private CategoryService categoryService;
+
     @GetMapping
-    public String listCategories(Model model){
+    public String listCategories(Model model) {
         List<Category> categories = categoryService.getAllCategories();
+        long activeCategoriesCount = categories.stream().filter(Category::getEstado).count();
         model.addAttribute("categories", categories);
-        model.addAttribute("activeCategoriesCount", categories.size());
-        model.addAttribute("pageTitle", "Gestion de Categorias");
+        model.addAttribute("activeCategoriesCount", activeCategoriesCount);
+        model.addAttribute("pageTitle", "Gestión de Categorías");
         return "categories/list";
     }
+
     @GetMapping("/new")
-    public String newCategory(Model model){
-        model.addAttribute("category", new Category() );
-        model.addAttribute("pageTitle", "Crear nueva categoria");
+    public String showCreateForm(Model model) {
+        model.addAttribute("category", new Category());
+        model.addAttribute("pageTitle", "Crear Nueva Categoría");
         return "categories/form";
     }
+
     @PostMapping
-    public String createCategory(Model model, @ModelAttribute Category category){
-        try{
+    public String createCategory(@ModelAttribute Category category, Model model) {
+        try {
             categoryService.createCategory(category);
-            model.addAttribute("successMessage", "Categoria creada");
+            model.addAttribute("successMessage", "Categoría creada exitosamente");
             return "redirect:/categories";
         } catch (Exception e) {
-            model.addAttribute("errorMessage", "Error en creacion -> Ex:" +e.getMessage());
+            model.addAttribute("errorMessage", "Error al crear categoría: " + e.getMessage());
+            model.addAttribute("category", category);
             return "categories/form";
         }
     }
+
     @GetMapping("/{id}/edit")
-    public String showEditCategory(@PathVariable Long id, Model model){
-        Optional<Category> cat = categoryService.getCategoryById(id);
-        if(cat.isEmpty()){
-            model.addAttribute("errorMessage", "Categoria no existe");
-            return  "redirect:/categories";
+    public String showEditForm(@PathVariable Long id, Model model) {
+        Optional<Category> category = categoryService.getCategoryById(id);
+        if (category.isEmpty()) {
+            model.addAttribute("errorMessage", "Categoría no encontrada");
+            return "redirect:/categories";
         }
-        model.addAttribute("category", cat.get());
-        model.addAttribute("pageTitle", "Editar Categoria");
+        model.addAttribute("category", category.get());
+        model.addAttribute("pageTitle", "Editar Categoría");
         model.addAttribute("isEdit", true);
         return "categories/form";
     }
+
     @PostMapping("/{id}")
-    public String editCategory(@PathVariable Long id, @ModelAttribute Category category, Model model){
-        try{
+    public String updateCategory(@PathVariable Long id, @ModelAttribute Category category, Model model) {
+        try {
             categoryService.updateCategory(id, category);
-            model.addAttribute("successMessage", "Categoria actualizada");
+            model.addAttribute("successMessage", "Categoría actualizada exitosamente");
             return "redirect:/categories";
         } catch (Exception e) {
-            model.addAttribute("errorMessage", "Error en editar -> Ex:" +e.getMessage());
+            model.addAttribute("errorMessage", "Error al actualizar categoría: " + e.getMessage());
+            model.addAttribute("category", category);
+            model.addAttribute("isEdit", true);
             return "categories/form";
         }
-
     }
+
     @GetMapping("/{id}")
-    public String viewCategory(@PathVariable Long id, Model model ){
+    public String viewCategory(@PathVariable Long id, Model model) {
         Optional<Category> category = categoryService.getCategoryById(id);
-        if(category.isEmpty()){
-            model.addAttribute("errorMessage", "Categoria no existe");
-            return  "redirect:/categories";
+        if (category.isEmpty()) {
+            model.addAttribute("errorMessage", "Categoría no encontrada");
+            return "redirect:/categories";
         }
         model.addAttribute("category", category.get());
-        model.addAttribute("pageTitle", "Detalle Categoria");
-        return  "categories/form";
-    }
-    @PostMapping("/{id}/delete")
-    public String deleteCategory(@PathVariable Long id, Model model ){
-        try{
-            if(categoryService.deleteCategory(id))
-                model.addAttribute("successMessage", "Categoria eliminada");
-        }catch (Exception e) {
-            model.addAttribute("errorMessage", "Error en eliminar -> Ex:" +e.getMessage());
-        }
-        return "categories/list";
+        model.addAttribute("pageTitle", "Detalles de la Categoría");
+        return "categories/detail";
     }
 
+    @PostMapping("/{id}/delete")
+    public String deleteCategory(@PathVariable Long id, Model model) {
+        try {
+            model.addAttribute("successMessage", "Categoría eliminada exitosamente");
+        } catch (RuntimeException e) {
+            model.addAttribute("errorMessage", "Error al eliminar categoría: " + e.getMessage());
+        } catch (Exception e) {
+            model.addAttribute("errorMessage", "Error inesperado al eliminar categoría");
+        }
+        return "redirect:/categories";
+    }
 }

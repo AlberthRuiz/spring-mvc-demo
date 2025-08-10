@@ -16,7 +16,7 @@ public class Category {
     @Column(name = "descripcion", length = 250)
     private String descripcion;
     @Column(name = "estado", nullable = false)
-    private boolean estado;
+    private Boolean estado;
 
     @OneToMany(mappedBy = "category", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Product> products = new ArrayList<>();
@@ -56,7 +56,7 @@ public class Category {
         this.descripcion = descripcion;
     }
 
-    public boolean isEstado() {
+    public boolean getEstado() {
         return estado;
     }
 

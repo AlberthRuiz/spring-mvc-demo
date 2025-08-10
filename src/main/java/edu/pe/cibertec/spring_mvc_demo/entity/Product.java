@@ -1,17 +1,17 @@
 package edu.pe.cibertec.spring_mvc_demo.entity;
 
 import jakarta.persistence.*;
-
 import java.math.BigDecimal;
 
 @Entity
 @Table(name = "productos")
 public class Product {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "nombre", length = 200, nullable = false)
+    @Column(name = "nombre", nullable = false, length = 200)
     private String nombre;
 
     @Column(name = "precio", precision = 10, scale = 2, nullable = false)
@@ -20,45 +20,27 @@ public class Product {
     @Column(name = "stock", nullable = false)
     private Integer stock;
 
-    @ManyToOne
-    @JoinColumn(name = "category_id", nullable = false)
+    // Relación Many-to-One con Category
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "categoria_id", nullable = false)
     private Category category;
 
     @Column(name = "estado", nullable = false)
-    private Boolean estado;
+    private Boolean estado; // true = disponible, false = agotado
 
-    public boolean isAvailable(){
-        return  estado && stock>0;
-    }
+    // Constructor vacío (requerido por JPA)
+    public Product() {}
 
-    public Product() {
-    }
-
-    public Product(Category categoria, Boolean estado, Long id, String nombre, BigDecimal precio, Integer stock) {
-        this.category = categoria;
-        this.estado = estado;
-        this.id = id;
+    // Constructor con parámetros
+    public Product(String nombre, BigDecimal precio, Integer stock, Category category, Boolean estado) {
         this.nombre = nombre;
         this.precio = precio;
         this.stock = stock;
-    }
-
-    public Category getCategoria() {
-        return category;
-    }
-
-    public void setCategoria(Category categoria) {
-        this.category = categoria;
-    }
-
-    public Boolean getEstado() {
-        return estado;
-    }
-
-    public void setEstado(Boolean estado) {
+        this.category = category;
         this.estado = estado;
     }
 
+    // Getters y Setters
     public Long getId() {
         return id;
     }
@@ -89,5 +71,39 @@ public class Product {
 
     public void setStock(Integer stock) {
         this.stock = stock;
+    }
+
+    public Category getCategory() {
+        return category;
+    }
+
+    public void setCategory(Category category) {
+        this.category = category;
+    }
+
+    public Boolean getEstado() {
+        return estado;
+    }
+
+    public void setEstado(Boolean estado) {
+        this.estado = estado;
+    }
+
+    // Método de utilidad para verificar si está disponible
+    public boolean isDisponible() {
+        return estado && stock > 0;
+    }
+
+    // toString para depuración
+    @Override
+    public String toString() {
+        return "Product{" +
+                "id=" + id +
+                ", nombre='" + nombre + '\'' +
+                ", precio=" + precio +
+                ", stock=" + stock +
+                ", category=" + (category != null ? category.getNombre() : "null") +
+                ", estado=" + estado +
+                '}';
     }
 }
