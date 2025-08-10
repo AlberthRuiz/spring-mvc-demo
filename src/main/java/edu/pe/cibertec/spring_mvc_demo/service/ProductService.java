@@ -105,4 +105,16 @@ public class ProductService {
     public boolean existsById(Long id) {
         return id != null && id > 0 && productRepository.existsById(id);
     }
+
+    public List<Product> getProductsByCategory(Long categoryId) {
+        if (categoryId == null || categoryId <= 0) {
+            throw new IllegalArgumentException("ID de categoría inválido");
+        }
+        
+        List<Product> allProducts = getAllProducts();
+        return allProducts.stream()
+                .filter(product -> product.getCategory() != null && 
+                                 categoryId.equals(product.getCategory().getId()))
+                .toList();
+    }
 }

@@ -21,8 +21,14 @@ public class CategoryController {
     public String listCategories(Model model) {
         List<Category> categories = categoryService.getAllCategories();
         long activeCategoriesCount = categories.stream().filter(Category::getEstado).count();
+        long categoriesWithProducts = categories.stream().filter(c -> c.getCountProducts() > 0).count();
+        long categoriesWithoutProducts = categories.stream().filter(c -> c.getCountProducts() == 0).count();
+        
         model.addAttribute("categories", categories);
         model.addAttribute("activeCategoriesCount", activeCategoriesCount);
+        model.addAttribute("categoriesWithProducts", categoriesWithProducts);
+        model.addAttribute("categoriesWithoutProducts", categoriesWithoutProducts);
+        model.addAttribute("searchTerm", "");
         model.addAttribute("pageTitle", "Gestión de Categorías");
         return "categories/list";
     }
@@ -81,7 +87,9 @@ public class CategoryController {
             model.addAttribute("errorMessage", "Categoría no encontrada");
             return "redirect:/categories";
         }
-        model.addAttribute("category", category.get());
+        Category categoryObj = category.get();
+        model.addAttribute("category", categoryObj);
+        model.addAttribute("productCount", categoryObj.getCountProducts());
         model.addAttribute("pageTitle", "Detalles de la Categoría");
         return "categories/detail";
     }
@@ -89,6 +97,7 @@ public class CategoryController {
     @PostMapping("/{id}/delete")
     public String deleteCategory(@PathVariable Long id, Model model) {
         try {
+            categoryService.deleteCategory(id);
             model.addAttribute("successMessage", "Categoría eliminada exitosamente");
         } catch (RuntimeException e) {
             model.addAttribute("errorMessage", "Error al eliminar categoría: " + e.getMessage());

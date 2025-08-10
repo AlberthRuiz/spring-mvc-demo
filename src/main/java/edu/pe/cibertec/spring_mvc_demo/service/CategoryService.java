@@ -42,7 +42,13 @@ public class CategoryService {
     }
 
     public List<Category> getActiveCategories() {
-        throw new UnsupportedOperationException("Implementar findByEstadoTrueOrderByNombreAsc en CategoryRepostory");
+        List<Category> categories = new ArrayList<>();
+        categoryRepository.findAll().forEach(category -> {
+            if (category.getEstado()) {
+                categories.add(category);
+            }
+        });
+        return categories;
     }
 
     public Optional<Category> getCategoryById(Long id) {
@@ -56,7 +62,11 @@ public class CategoryService {
         if (nombre == null || nombre.trim().isEmpty()) {
             return Optional.empty();
         }
-        throw new UnsupportedOperationException("Implementar findByNombre en CategoryRepostory");
+        List<Category> categories = new ArrayList<>();
+        categoryRepository.findAll().forEach(categories::add);
+        return categories.stream()
+                .filter(category -> category.getNombre().equalsIgnoreCase(nombre.trim()))
+                .findFirst();
     }
 
     public Category updateCategory(Long id, Category categoryDetails) {
@@ -70,7 +80,11 @@ public class CategoryService {
 
         if (categoryDetails.getNombre() != null && !categoryDetails.getNombre().trim().isEmpty()) {
             String newName = categoryDetails.getNombre().trim();
-            throw new UnsupportedOperationException("Implementar existsByNombreIgnoreCaseAndIdNot en CategoryRepostory");
+            // Verificar si el nuevo nombre ya existe en otra categoría
+            if (!newName.equalsIgnoreCase(category.getNombre()) && existsByName(newName)) {
+                throw new IllegalArgumentException("Ya existe una categoría con el nombre: " + newName);
+            }
+            category.setNombre(newName);
         }
 
         if (categoryDetails.getDescripcion() != null) {
@@ -91,7 +105,14 @@ public class CategoryService {
             return false;
         }
 
-        throw new UnsupportedOperationException("Implementar countProductsByCategory en CategoryRepostory");
+        // Verificar si la categoría tiene productos asociados
+        Optional<Category> category = categoryRepository.findById(id);
+        if (category.isPresent() && !category.get().getProducts().isEmpty()) {
+            throw new RuntimeException("No se puede eliminar la categoría porque tiene productos asociados");
+        }
+
+        categoryRepository.deleteById(id);
+        return true;
     }
 
     public boolean existsById(Long id) {
@@ -102,6 +123,28 @@ public class CategoryService {
         if (nombre == null || nombre.trim().isEmpty()) {
             return false;
         }
-        throw new UnsupportedOperationException("Implementar existsByNombreIgnoreCase en CategoryRepostory");
+        return categoryRepository.existsByNombreIgnoreCase(nombre.trim());
+    }
+
+    public List<Category> searchCategoriesByName(String searchTerm) {
+        if (searchTerm == null || searchTerm.trim().isEmpty()) {
+            return getAllCategories();
+        }
+        
+        List<Category> allCategories = getAllCategories();
+        return allCategories.stream()
+                .filter(category -> category.getNombre().toLowerCase().contains(searchTerm.toLowerCase().trim()))
+                .toList();
+    }
+
+    public Category toggleCategoryStatus(Long id) {
+        Optional<Category> categoryOpt = getCategoryById(id);
+        if (categoryOpt.isEmpty()) {
+            throw new RuntimeException("Categoría no encontrada con ID: " + id);
+        }
+        
+        Category category = categoryOpt.get();
+        category.setEstado(!category.getEstado());
+        return categoryRepository.save(category);
     }
 }

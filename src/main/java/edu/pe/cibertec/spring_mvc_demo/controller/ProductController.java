@@ -22,13 +22,20 @@ public class ProductController {
     @Autowired
     private CategoryService categoryService;
     @GetMapping
-    public String listProducts(Model model) {
-        List<Product> products = productService.getAllProducts();
+    public String listProducts(@RequestParam(required = false) Long category, Model model) {
+        List<Product> products;
+        if (category != null) {
+            products = productService.getProductsByCategory(category);
+        } else {
+            products = productService.getAllProducts();
+        }
+        
         List<Category> categories = categoryService.getAllCategories();
 
         model.addAttribute("products", products);
         model.addAttribute("categories", categories);
-        model.addAttribute("pageTitle", "Gestión de Productos");
+        model.addAttribute("selectedCategory", category);
+        model.addAttribute("pageTitle", category != null ? "Productos por Categoría" : "Gestión de Productos");
 
         return "products/list"; // Retorna la vista list.html
     }
